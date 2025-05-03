@@ -1,0 +1,99 @@
+{% extends 'detector/base.html' %}
+
+{% block title %}Analysis Results{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+        
+        <!-- Header -->
+        <div class="p-6 {% if article.is_fake %}bg-red-100{% else %}bg-green-100{% endif %}">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold {% if article.is_fake %}text-red-800{% else %}text-green-800{% endif %}">
+                    {% if article.is_fake %}
+                        ⚠️ Likely Fake News
+                    {% else %}
+                        ✅ Likely Genuine News
+                    {% endif %}
+                </h1>
+                <div class="text-right">
+                    <div class="text-sm text-gray-600">Confidence</div>
+                    <div class="text-3xl font-bold {% if article.is_fake %}text-red-700{% else %}text-green-700{% endif %}">
+                        {{ probability|floatformat:1 }}%
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Body -->
+        <div class="p-6">
+            <!-- Title -->
+            <h2 class="text-xl font-semibold mb-2 text-gray-800">{{ article.title }}</h2>
+
+            <!-- URL -->
+            {% if article.url %}
+            <p class="mb-4 text-blue-600 break-all text-sm">
+                <a href="{{ article.url }}" target="_blank" class="hover:underline">{{ article.url }}</a>
+            </p>
+            {% endif %}
+            
+            <!-- Content -->
+            <div class="mb-6">
+                <h3 class="text-lg font-medium mb-2 text-gray-700">Content</h3>
+                <div class="bg-gray-50 p-4 rounded border border-gray-200 max-h-96 overflow-y-auto">
+                    <p class="whitespace-pre-line text-gray-800 text-sm">{{ article.content|truncatewords:300 }}</p>
+                    {% if article.content|wordcount > 300 %}
+                        <p class="mt-2 text-gray-500 text-xs">Note: Content truncated for readability.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Insights -->
+            <div class="mb-6">
+                <h3 class="text-lg font-medium mb-3 text-gray-700">Analysis Summary</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Credibility Score -->
+                    <div class="p-4 border border-gray-200 rounded-lg">
+                        <div class="text-sm text-gray-600 mb-2">Credibility Score</div>
+                        <div class="w-full bg-gray-200 rounded-full h-4">
+                            <div class="{% if article.is_fake %}bg-red-600{% else %}bg-green-600{% endif %} h-4 rounded-full transition-all duration-500"
+                                 style="width: {{ probability|default:0|floatformat:"0" }}%;"></div>
+                        </div>
+                        <div class="flex justify-between mt-1 text-xs text-gray-500">
+                            <span>Likely Real</span>
+                            <span>Likely Fake</span>
+                        </div>
+                    </div>
+
+                    <!-- Result -->
+                    <div class="p-4 border border-gray-200 rounded-lg">
+                        <div class="text-sm text-gray-600 mb-2">Classification</div>
+                        <div class="font-semibold text-lg {% if article.is_fake %}text-red-600{% else %}text-green-600{% endif %}">
+                            {% if article.is_fake %}
+                                Classified as Fake News
+                            {% else %}
+                                Classified as Real News
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="p-4 bg-blue-50 text-blue-800 rounded text-sm leading-relaxed">
+                <strong>Disclaimer:</strong> This result is generated using an AI-based classifier. It is not a definitive fact and should be used for informational purposes only. Always cross-check with trusted news sources.
+            </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="p-6 bg-gray-50 border-t border-gray-200 flex justify-between items-center">
+            <a href="{% url 'detector:index' %}" class="btn bg-gray-200 text-gray-800 hover:bg-gray-300">
+                ← Back to Home
+            </a>
+            <button onclick="window.print()" class="btn bg-blue-600 text-white hover:bg-blue-700">
+                🖨️ Print Results
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+/* Additional custom styles beyond Tailwind */
+
+/* Animation for progress bars */
+@keyframes fillProgress {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+.animate-fill {
+    animation: fillProgress 1s ease-out forwards;
+}
+
+/* Print styles */
+@media print {
+    nav, footer, .no-print {
+        display: none !important;
+    }
+    
+    body {
+        background-color: white;
+    }
+    
+    .print-full-width {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+/* Transitions for messages */
+.message {
+    transition: opacity 0.5s ease-out;
+}
+
+/* Custom scrollbar for content area */
+.content-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.content-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.content-scrollbar::-webkit-scrollbar-thumb {
+    background: #c0c0c0;
+    border-radius: 4px;
+}
+
+.content-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #a0a0a0;
+}
